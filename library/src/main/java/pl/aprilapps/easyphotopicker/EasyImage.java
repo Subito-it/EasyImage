@@ -27,7 +27,7 @@ import java.util.List;
 @SuppressWarnings({"unused", "FieldCanBeLocal", "ResultOfMethodCallIgnored"})
 public class EasyImage implements EasyImageConfig {
 
-    private static final boolean SHOW_GALLERY_IN_CHOOSER = false;
+    private enum ChooserType {GALLERY, DOCUMENTS, GALLERY_AND_DOCUMENTS}
 
     public enum ImageSource {
         GALLERY, DOCUMENTS, CAMERA
@@ -81,15 +81,11 @@ public class EasyImage implements EasyImageConfig {
         return intent;
     }
 
-    private static Intent createChooserIntent(Context context, String chooserTitle, int type) throws IOException {
-        return createChooserIntent(context, chooserTitle, SHOW_GALLERY_IN_CHOOSER, type);
-    }
-
-    private static Intent createChooserIntent(Context context, String chooserTitle, boolean showGallery, int type) throws IOException {
+    private static Intent createChooserIntent(Context context, String chooserTitle, ChooserType chooserType, int type) throws IOException {
         storeType(context, type);
 
         Uri outputFileUri = createCameraPictureFile(context);
-        List<Intent> cameraIntents = new ArrayList<>();
+        List<Intent> intents = new ArrayList<>();
         Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         PackageManager packageManager = context.getPackageManager();
         List<ResolveInfo> camList = packageManager.queryIntentActivities(captureIntent, 0);
@@ -99,18 +95,31 @@ public class EasyImage implements EasyImageConfig {
             intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
             intent.setPackage(packageName);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-            cameraIntents.add(intent);
+            intents.add(intent);
         }
         Intent galleryIntent;
+        Intent documentsIntent;
+        Intent chooserIntent;
 
-        if (showGallery) {
-            galleryIntent = createGalleryIntent(context, type);
-        } else {
-            galleryIntent = createDocumentsIntent(context, type);
+
+        switch (chooserType) {
+            case GALLERY:
+                galleryIntent = createGalleryIntent(context, type);
+                chooserIntent = Intent.createChooser(galleryIntent, chooserTitle);
+                break;
+            case DOCUMENTS:
+                documentsIntent = createDocumentsIntent(context, type);
+                chooserIntent = Intent.createChooser(documentsIntent, chooserTitle);
+                break;
+            default:
+                galleryIntent = createGalleryIntent(context, type);
+                documentsIntent = createDocumentsIntent(context, type);
+                chooserIntent = Intent.createChooser(galleryIntent, chooserTitle);
+                intents.add(documentsIntent);
+                break;
         }
 
-        Intent chooserIntent = Intent.createChooser(galleryIntent, chooserTitle);
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intents.toArray(new Parcelable[intents.size()]));
 
         return chooserIntent;
     }
@@ -125,7 +134,7 @@ public class EasyImage implements EasyImageConfig {
 
     public static void openChooserWithDocuments(Activity activity, String chooserTitle, int type) {
         try {
-            Intent intent = createChooserIntent(activity, chooserTitle, type);
+            Intent intent = createChooserIntent(activity, chooserTitle, ChooserType.DOCUMENTS, type);
             activity.startActivityForResult(intent, REQ_SOURCE_CHOOSER);
         } catch (IOException e) {
             e.printStackTrace();
@@ -134,7 +143,7 @@ public class EasyImage implements EasyImageConfig {
 
     public static void openChooserWithDocuments(Fragment fragment, String chooserTitle, int type) {
         try {
-            Intent intent = createChooserIntent(fragment.getActivity(), chooserTitle, type);
+            Intent intent = createChooserIntent(fragment.getActivity(), chooserTitle, ChooserType.DOCUMENTS, type);
             fragment.startActivityForResult(intent, REQ_SOURCE_CHOOSER);
         } catch (IOException e) {
             e.printStackTrace();
@@ -143,7 +152,7 @@ public class EasyImage implements EasyImageConfig {
 
     public static void openChooserWithDocuments(android.app.Fragment fragment, String chooserTitle, int type) {
         try {
-            Intent intent = createChooserIntent(fragment.getActivity(), chooserTitle, type);
+            Intent intent = createChooserIntent(fragment.getActivity(), chooserTitle, ChooserType.DOCUMENTS, type);
             fragment.startActivityForResult(intent, REQ_SOURCE_CHOOSER);
         } catch (IOException e) {
             e.printStackTrace();
@@ -152,7 +161,7 @@ public class EasyImage implements EasyImageConfig {
 
     public static void openChooserWithGallery(Activity activity, String chooserTitle, int type) {
         try {
-            Intent intent = createChooserIntent(activity, chooserTitle, true, type);
+            Intent intent = createChooserIntent(activity, chooserTitle, ChooserType.GALLERY, type);
             activity.startActivityForResult(intent, REQ_SOURCE_CHOOSER);
         } catch (IOException e) {
             e.printStackTrace();
@@ -161,7 +170,7 @@ public class EasyImage implements EasyImageConfig {
 
     public static void openChooserWithGallery(Fragment fragment, String chooserTitle, int type) {
         try {
-            Intent intent = createChooserIntent(fragment.getActivity(), chooserTitle, true, type);
+            Intent intent = createChooserIntent(fragment.getActivity(), chooserTitle, ChooserType.GALLERY, type);
             fragment.startActivityForResult(intent, REQ_SOURCE_CHOOSER);
         } catch (IOException e) {
             e.printStackTrace();
@@ -170,7 +179,34 @@ public class EasyImage implements EasyImageConfig {
 
     public static void openChooserWithGallery(android.app.Fragment fragment, String chooserTitle, int type) {
         try {
-            Intent intent = createChooserIntent(fragment.getActivity(), chooserTitle, true, type);
+            Intent intent = createChooserIntent(fragment.getActivity(), chooserTitle, ChooserType.GALLERY, type);
+            fragment.startActivityForResult(intent, REQ_SOURCE_CHOOSER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void openChooserWithGalleryAndDocuments(Activity activity, String chooserTitle, int type) {
+        try {
+            Intent intent = createChooserIntent(activity, chooserTitle, ChooserType.GALLERY_AND_DOCUMENTS, type);
+            activity.startActivityForResult(intent, REQ_SOURCE_CHOOSER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void openChooserWithGalleryAndDocuments(Fragment fragment, String chooserTitle, int type) {
+        try {
+            Intent intent = createChooserIntent(fragment.getActivity(), chooserTitle, ChooserType.GALLERY_AND_DOCUMENTS, type);
+            fragment.startActivityForResult(intent, REQ_SOURCE_CHOOSER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void openChooserWithGalleryAndDocuments(android.app.Fragment fragment, String chooserTitle, int type) {
+        try {
+            Intent intent = createChooserIntent(fragment.getActivity(), chooserTitle, ChooserType.GALLERY_AND_DOCUMENTS, type);
             fragment.startActivityForResult(intent, REQ_SOURCE_CHOOSER);
         } catch (IOException e) {
             e.printStackTrace();

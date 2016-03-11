@@ -17,13 +17,17 @@ EasyImage allow you to easily take picture from gallery, camera or documents wit
 - ```EasyImage.openDocuments(Activity activity, int type);```
 - ```EasyImage.openDocuments(Fragment fragment, int type);```
 
-####Displaying system picker to chose from camera or documents or gallery if no documents app available
+####Displaying system picker to chose from camera or documents
 - ```EasyImage.openChooserWithDocuments(Activity activity, String chooserTitle, int type);```
 - ```EasyImage.openChooserWithDocuments(Fragment fragment, String chooserTitle, int type);```
 
 ####Displaying system picker to chose from camera or gallery app
 - ```EasyImage.openChooserWithGallery(Activity activity, String chooserTitle, int type);```
 - ```EasyImage.openChooserWithGallery(Fragment fragment, String chooserTitle, int type);```
+
+####Displaying system picker to chose from camera or gallery app or documents
+- ```EasyImage.openChooserWithGalleryAndDocuments(Activity activity, String chooserTitle, int type);```
+- ```EasyImage.openChooserWithGalleryAndDocuments(Fragment fragment, String chooserTitle, int type);```
 
 
 Type param is there only if you wan't to return different kind of images on the same screen, otherwise it's not relevant. If so just pass any int there.

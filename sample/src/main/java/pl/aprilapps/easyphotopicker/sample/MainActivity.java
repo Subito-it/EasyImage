@@ -119,6 +119,11 @@ public class MainActivity extends AppCompatActivity {
         EasyImage.openChooserWithGallery(this, "Pick source", 0);
     }
 
+    @OnClick(R.id.chooser_button3)
+    protected void onChooserWithGalleryAndDocumentsClicked() {
+        EasyImage.openChooserWithGalleryAndDocuments(this, "Pick source", 0);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
