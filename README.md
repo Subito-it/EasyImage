@@ -1,4 +1,4 @@
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-EasyImage-green.svg?style=true)](https://android-arsenal.com/details/1/2725)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-EasyImage-green.svg?style=true)](https://android-arsenal.com/details/1/2725) [![](https://jitpack.io/v/jkwiecien/EasyImage.svg)](https://jitpack.io/#renaudcerrato/FloatingSearchView)
 # What is it?
 EasyImage allow you to easily take picture from gallery, camera or documents without creating lots of boilerplate.
   
@@ -101,15 +101,9 @@ EasyImage.openCamera()
 [This library](https://github.com/tajchert/Nammu) will help you manage runtime permissions.
 
 ##Gradle dependency
-```groovy
-repositories {
-    maven { url "https://jitpack.io" }
-}
-    
-dependencies {
-    compile 'com.github.subito-it:EasyImage:1.3.1'
-}
-```
+Get the latest version from jitpack
+
+[![](https://jitpack.io/v/jkwiecien/EasyImage.svg)](https://jitpack.io/#renaudcerrato/FloatingSearchView)
 
 
 License
