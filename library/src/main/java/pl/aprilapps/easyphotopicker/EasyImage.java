@@ -105,6 +105,7 @@ public class EasyImage implements EasyImageConfig {
         Uri outputFileUri = createCameraPictureFile(context);
         List<Intent> intents = new ArrayList<>();
         Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        grantWritePermission(context, captureIntent, outputFileUri);
         PackageManager packageManager = context.getPackageManager();
         List<ResolveInfo> camList = packageManager.queryIntentActivities(captureIntent, 0);
         for (ResolveInfo res : camList) {
